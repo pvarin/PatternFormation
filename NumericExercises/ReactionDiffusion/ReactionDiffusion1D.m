@@ -19,10 +19,10 @@ function ReactionDiffusion1D(IC,X,a)
     %Set simulation variables
     N = length(C0);
     nplotstep = 1;
-    dt = .00001;
+    dt = 0.001;
     dx = (X(2)-X(1))/N;
-    kappa = .0001;
-    gamma = 1;
+    kappa = .9;
+    gamma = 0;
     
     %Create the implicit Euler step matrix for Neumann boundary conditions
     uDiag = [0; ones(N-1,1)];
@@ -30,12 +30,12 @@ function ReactionDiffusion1D(IC,X,a)
     lDiag = [ones(N-1,1); 0];
     B = [uDiag, cDiag, lDiag];
     d = [1; 0; -1];
-    L = spdiags(B, d, N, N);
+    L = spdiags(B, d, N, N)*dt/(2*dx^2);
     
-    S_C = speye(N) - dt/dx^2*L;
-    S_C = S_C\speye(N);
-    S_E = speye(N) - kappa*dt/dx^2*L;
-    S_E = S_E\speye(N);
+    S_C = speye(N) - L;
+    [L_C,U_C,~] = lu(S_C);
+    S_E = speye(N) - kappa*L;
+    [L_E,U_E,~] = lu(S_E);
     [Top,Restart,Pause,Quit,CPlot,EPlot] = initgraphics(N,X);
 
     %run until the user exits
@@ -54,8 +54,8 @@ function ReactionDiffusion1D(IC,X,a)
                 pause(.1)
             end
             nstep = nstep+1;
-            C = S_C*(C-F(C,E,gamma,a));
-            E = S_E*(E+F(C,E,gamma,a));
+            C = U_C\L_C\(L*C+C-F(C,E,gamma,a));
+            E = U_E\L_E\(L*E+E+F(C,E,gamma,a));
             
             %plot the function at appropriate intervals
             if mod(nstep,nplotstep) == 0
@@ -76,11 +76,11 @@ function [Top,Restart,Pause,Quit,CPlot,EPlot] = initgraphics(N,X)
    set(gcf,'numbertitle','off','name','ReactionDiffusion1D')
    subplot(2,1,1)
    CPlot = plot(linspace(X(1),X(2),N),zeros(1,N));
-   axis([X(1) X(2) -.5 .5])
+%    axis([X(1) X(2) -.5 .5])
    Top = title('1-D Reaction Diffusion Simulation');
    subplot(2,1,2)
    EPlot = plot(linspace(X(1),X(2),N),zeros(1,N));
-   axis([X(1) X(2) -2 2])
+%    axis([X(1) X(2) -2 2])
    Restart = uicontrol('position',[20 20 80 20],'style','toggle','string','restart');
    Pause = uicontrol('position',[120 20 80 20],'style','toggle','string','pause');
    Quit = uicontrol('position',[220 20 80 20],'style','toggle','string','stop');
