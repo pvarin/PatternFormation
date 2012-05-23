@@ -4,7 +4,7 @@ kappa = .1;
 gamma = 1;
 
 % similation parameters
-dt = .1; T = 1100;
+dt = .01; T = 1100;
 dx = 1;
 numsteps = T/dt;
 N = 100;
@@ -28,12 +28,15 @@ L = spdiags(B, d, N, N)*dt/(2*dx^2);
 [L_C, U_C, ~] = lu(speye(N)-L);
 [L_E, U_E, ~] = lu(speye(N)-kappa*L);
 
+M_C = (speye(N)+L);
+M_E = (speye(N)+kappa*L);
+
 %Explicit Euler Method
 for i=2:numsteps
     % domain interior
     f = E(:,i-1).*(1-E(:,i-1)).*(E(:,i-1)-a)+gamma*C(:,i-1);
-    C(:,i) = U_C\(L_C\(C(:,i-1)-f*dt));
-    E(:,i) = U_E\(L_E\(E(:,i-1)+f*dt));
+    C(:,i) = U_C\(L_C\(M_C*C(:,i-1)-f*dt));
+    E(:,i) = U_E\(L_E\(M_E*E(:,i-1)+f*dt));
 end
 
 figure
