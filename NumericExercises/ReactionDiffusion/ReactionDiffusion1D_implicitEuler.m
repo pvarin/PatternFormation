@@ -3,7 +3,7 @@ a = .5;
 kappa = .1;
 gamma = 1;
 
-% similation parameters
+% simulation parameters
 dt = .1; T = 1100;
 dx = 1;
 numsteps = T/dt;
