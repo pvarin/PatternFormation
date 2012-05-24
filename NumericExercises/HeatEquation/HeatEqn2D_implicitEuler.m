@@ -16,7 +16,7 @@ V = Matrix2Vector(V0);
 diag = zeros(N*M,1);
 diag(1:N) = [-2; -3*ones(N-2,1); -2];
 diag(end-N+1:end) = [-2; -3*ones(N-2,1); -2];
-temp = [-4; -4*ones(N-2,1); -4];%FIXME: I think this should  be
+temp = [-3; -4*ones(N-2,1); -3];%FIXME: I think this should  be
                                 %[-3; -4*ones(N-2,1); -3] but this gives
                                 %the wrong result, reanalyze the laplacian
                                 %matrix
@@ -26,6 +26,10 @@ end
 B = [ones(N*M,1) ones(N*M,1) diag ones(N*M,1) ones(N*M,1)];
 d = [-N -1 0 1 N];
 L=spdiags(B,d,N*M,N*M);
+for i=1:M-1
+   L(i*N+1,i*N)=0;
+   L(i*N,i*N+1)=0;
+end
 [V_L, V_U, ~] = lu(speye(N*M) - k*dt/dx^2*L);
 
 figure(1)
@@ -48,5 +52,4 @@ for i=2:numsteps
     shading interp
     axis([0 N*dx 0 M*dy -.2 .8 -.2 .8])
     drawnow
-%     return
 end
