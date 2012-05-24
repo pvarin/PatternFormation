@@ -47,7 +47,7 @@ for i=2:numsteps
     
     V = V_U\(V_L\(L_op*V));
     
-    surf(linspace(0,dx*N,N),linspace(0,dx*M,M),Vector2Matrix(V,N,M))
+    pcolor(linspace(0,dx*N,N),linspace(0,dx*M,M),Vector2Matrix(V,N,M))
     xlabel('x')
     ylabel('y')
     shading interp
