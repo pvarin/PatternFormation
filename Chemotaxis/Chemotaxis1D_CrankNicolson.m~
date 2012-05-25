@@ -1,15 +1,15 @@
 % model parameters
 b = 1.01;
-kappa = 2;
+kappa = 1;
 
 % simulation parameters
 dt = .001; T = 80;
 dx = .1;
 numsteps = T/dt;
-N = 1000;
+N = 100;
 
 % initial conditions
-U0 = ones(N,1); U0(1) = U0(1) + .1;
+U0 = ones(N,1); U0(1) = U0(1) + .1
 V0 = ones(N,1);
 
 % initialize the matrices

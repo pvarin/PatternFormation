@@ -12,7 +12,7 @@ function animate(C, E, dx)
         plot(linspace(0,dx*N,N),C(:,i))
         hold all
         plot(linspace(0,dx*N,N),E(:,i))
-        axis([0 dx*N -2 2])
+        axis([0 dx*N 0 25])
         drawnow
     end
 end
