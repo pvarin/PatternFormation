@@ -1,6 +1,6 @@
 % model parameters
 b = 1.01;
-kappa = 2;
+kappa = 4;
 
 % simulation parameters
 dt = .001; T = 80;
