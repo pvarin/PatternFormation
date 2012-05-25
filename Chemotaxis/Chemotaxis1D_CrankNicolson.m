@@ -1,6 +1,6 @@
 % model parameters
 b = 1.01;
-kappa = 2;
+kappa = 5;
 
 % simulation parameters
 dt = .001; T = 80;
@@ -45,11 +45,9 @@ for i=2:numsteps
     V(:,i) = U_V\(L_V\(V_op*V(:,i-1)+dt*U(:,i-1)));
 end
 
-figure
-pcolor(linspace(0,dx*N,N),linspace(0,dt*numsteps,100),U(:,1:floor(end/100):end)')
-shading flat
-colormap gray
-drawnow
-axis([0 dx*N 0 T 0 .1 0 1])
-    
+spacetime(U(:,1:floor(end/100):end),linspace(0,dx*N,N),linspace(0,dt*numsteps,100))   
 animate(U,V,dx)
+
+U = U(:,1:80:80000); V = V(:,1:80:80000);
+x = dx:dx:N*dx; t = dt*80:dt*80:80;
+save('CrankNicolsonChemotaxisData_new.mat','U','V','x','t','dx','dt','b','kappa')
