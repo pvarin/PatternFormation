@@ -1,22 +1,25 @@
 function speed = spreadingSpeed(U, x, t)
     [~, Y]  = gradient(U');
-        l = max(Y(:))/2;
+    l = max(Y(:))/3;
     s = size(Y);
-    xi = []; yi=[];
+    ti = []; xi=[];
+    dx = x(2)-x(1);
+    dt = t(2)-t(1);
     for j=1:s(2)
         [m i] = max(Y(:,j));
         if m>l
-            xi = [xi; i];
-            yi = [yi; j];
+            ti = [ti; i];
+            xi = [xi; j];
         end
     end
-    p = polyfit(yi,xi,1);
+    p = polyfit(ti*dt,xi*dx,1);
     drawnow
-    speed = p(1)*(x(2)-x(1))/(t(2)-t(1));
-
-    pcolor(Y); shading interp
+    speed = p(1);
+    
+    figure
+    pcolor(x,t,Y); shading interp
     hold on
-    plot(yi,xi,'*g')
-    x_ = linspace(0,s(1));
-    plot(x_,p(2)+p(1)*x_,'r')
+    plot(xi*dx,ti*dt,'*g')
+    x_ = linspace(0,s(1)*dx);
+    plot(x_,(x_-p(2))/speed,'r')
 end

@@ -1,6 +1,6 @@
 % model parameters
 b = 1.01;
-kappa = 3;
+kappa = 4;
 
 % simulation parameters
 dt = .001; T = 80;
@@ -38,7 +38,7 @@ L = spdiags(B, d, N, N)/dx^2;
 U_op = speye(N)+dt/2*L;
 V_op = speye(N)+dt/2*(kappa*L-speye(N));
 
-%Explicit Euler Method
+%Crank Nicolson Method
 for i=2:numsteps
     U_op*U(:,i-1);
     U(:,i) = U_U\(L_U\(U_op*U(:,i-1)-dt*b*D*(D*V(:,i-1).*U(:,i-1))));
