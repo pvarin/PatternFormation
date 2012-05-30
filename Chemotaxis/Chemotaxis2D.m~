@@ -172,7 +172,7 @@ function varargout = Chemotaxis2D(varargin)
     %default initial conditions
     if ~U0init
         U0 = ones(M,N);
-        U0(floor(end/2)-2:floor(end/2)+2,floor(end/2)-2:floor(end/2)+2) = U0(floor(end/2)-2:floor(end/2)+2,floor(end/2)-2:floor(end/2)+2) + .2;
+        U0(1,1) = U0(1,1) + .2;
     end
     if ~V0init
         V0 = ones(M,N);
@@ -224,11 +224,9 @@ function varargout = Chemotaxis2D(varargin)
         %Crank-Nicolon Other Linear
         V = V*(1+dt/2)/(1-dt/2);
         
-        %Explicit Euler Non Linear and Cross Terms
-        U = U + dt*b*(V*Dx'.*U)*Dx';
-        U = U + dt*b*Dy*(Dy*V.*U);
+        %Explicit Euler Non Linear
         
-        V = V + U*dt;
+          
 %         U = ((U*Ux_op-dt*b*(V*Dx.*U)*Dx)/U_Ux)/L_Ux;
 %         V = ((V*Vx_op+dt*U)/U_Vx)/L_Vx;
         
@@ -295,7 +293,7 @@ function [Top,UPlot] = initgraphics(N,M,dx,dy)
    set(gcf,'numbertitle','off','name','2-D Chemotaxis Simulation')
    UPlot = surf(dx:dx:N*dx,dy:dy:M*dy,zeros(M,N));
    shading interp
-   axis([0 dy*M 0 dx*N 0 5])
+%    axis([0 dy*M 0 dx*N])
    xlabel('x')
    ylabel('y')
    Top = title('2-D Chemotaxis Simulation');
