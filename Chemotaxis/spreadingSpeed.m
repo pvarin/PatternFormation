@@ -16,10 +16,10 @@ function speed = spreadingSpeed(U, x, t)
     drawnow
     speed = p(1);
     
-    figure
-    pcolor(x,t,Y); shading interp
-    hold on
-    plot(xi*dx,ti*dt,'*g')
-    x_ = linspace(0,s(1)*dx);
-    plot(x_,(x_-p(2))/speed,'r')
+%     figure
+%     pcolor(x,t,Y); shading interp
+%     hold on
+%     plot(xi*dx,ti*dt,'*g')
+%     x_ = linspace(0,s(1)*dx);
+%     plot(x_,(x_-p(2))/speed,'r')
 end

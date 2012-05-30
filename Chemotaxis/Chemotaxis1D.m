@@ -48,7 +48,7 @@
 %               this must be a Boolean value
 %               default: false
 
-function [U,V] = Chemotaxis1D(varargin)
+function varargout = Chemotaxis1D(varargin)
     %% Defaults
     %default model parameters
     b = 1.01;
@@ -57,7 +57,6 @@ function [U,V] = Chemotaxis1D(varargin)
     %default simulation parameters
     dt = .01; numsteps = 10000;
     dx = .1; N = 1000;
-    nSaveStep = 1000;
     
     U0init = false; V0init = false; Ninit = false;
     saveData = false; saveSpeed = false;
@@ -135,11 +134,14 @@ function [U,V] = Chemotaxis1D(varargin)
         V0 = ones(N,1);
     end
     
+    nSaveStep = floor(numsteps/100);
+    numsteps = nSaveStep*100;
+    
     %% Prepare the Matrices
     % initialize the solution matrices
-    U = zeros(N,nSaveStep); V = zeros(N,nSaveStep);
-    U_ = zeros(N,numsteps); V_ = zeros(N,numsteps);
-    U(:,1) = U0; V(:,1) = V0;
+    U = zeros(N,1); V = zeros(N,1);
+    U_ = zeros(N,floor(numsteps/nSaveStep)); V_ = zeros(N,floor(numsteps/nSaveStep));
+    U = U0; V = V0;
     
     %prepare the operator matrices
     D = derivativeMatrix(N,dx);
@@ -155,19 +157,14 @@ function [U,V] = Chemotaxis1D(varargin)
     %Crank-Nicolson Method
     nstep = 1;
     while nstep<=numsteps
-        i = mod(nstep,nSaveStep)+1;
         nstep = nstep+1;
-        if i>1
-            U(:,i) = U_U\(L_U\(U_op*U(:,i-1)-dt*b*D*(D*V(:,i-1).*U(:,i-1))));
-            V(:,i) = U_V\(L_V\(V_op*V(:,i-1)+dt*U(:,i-1)));
-        elseif i==1
-            U(:,i) = U_U\(L_U\(U_op*U(:,end)-dt*b*D*(D*V(:,end).*U(:,end))));
-            V(:,i) = U_V\(L_V\(V_op*V(:,end)+dt*U(:,end)));
-        end
+        U = U_U\(L_U\(U_op*U-dt*b*D*(D*V.*U)));
+        V = U_V\(L_V\(V_op*V+dt*U));
         %split the data into multiple parts
-        if i==nSaveStep
-            U_(:,nSaveStep*(floor(nstep/i)-1)+1:nstep)=U;
-            V_(:,nSaveStep*(floor(nstep/i)-1)+1:nstep)=V;
+        if mod(nstep,nSaveStep)==0
+            i=nstep/nSaveStep;
+            U_(:,i)=U;
+            V_(:,i)=V;
         end
     end
     
@@ -175,27 +172,19 @@ function [U,V] = Chemotaxis1D(varargin)
     V = V_;
     clear U_ V_
     
-    %% Lower Data Resolution
-    x = dx:dx:dx*N;
-    if (numsteps > 1000) && (graph || saveData || saveSpeed)
-        Dt = floor(numsteps/1000);
-        U = U(:,1:Dt:numsteps); V = V(:,1:Dt:numsteps);
-        x = linspace(0,dx*N,N);
-        t = Dt*dt:Dt*dt:numsteps*dt;
-        spacetime(U,linspace(0,dx*N,N),Dt*dt:Dt*dt:numsteps*dt)
-    else
-        t = dt:dt:dt*numsteps;
+    %% Display Results and Save Data
+    if graph || saveData || saveSpeed
+        x = dx:dx:dx*N;
+        t = nSaveStep*dt:nSaveStep*dt:dt*numsteps;
     end
-    
-    %% Display Results
+        
+    % Display Results
     if graph
         spacetime(U,x,t)   
         animate(U,V,dx)
     end
-
-    ['speed: ', num2str(spreadingSpeed(U(5:end,:),x(5:end),t))]
     
-    %% Save Data
+    % Save Data
     if saveData || saveSpeed
         if saveData
             save('CrankNicolsonChemotaxisData_new.mat','U','V','x','t','dx','dt','b','kappa')
@@ -203,6 +192,25 @@ function [U,V] = Chemotaxis1D(varargin)
         if saveSpeed
             updateSpeedData(U,x,t,kappa,b)
         end
+    end
+    
+    %% Construct output
+    switch nargout
+        case 0
+            ['speed: ', num2str(spreadingSpeed(U(5:end,:),x(5:end),t))]
+        case 1
+            s = spreadingSpeed(U(5:end,:),x(5:end),t);
+            varargout = {s};
+        case 2
+            varargout = {U, V};
+        case 3
+            s = spreadingSpeed(U(5:end,:),x(5:end),t);
+            varargout = {s, U, V};
+        otherwise
+            err = MException('Output:Unsupported', ...
+                    ['This function is unsupported for ' ...
+                    num2str(nargout) ' output arguments']);
+            throw(err)
     end
 end
 
