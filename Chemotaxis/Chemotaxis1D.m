@@ -51,7 +51,7 @@
 function varargout = Chemotaxis1D(varargin)
     %% Defaults
     %default model parameters
-    b = 1.01;
+    b = 2;
     kappa = 1;
 
     %default simulation parameters
@@ -59,7 +59,7 @@ function varargout = Chemotaxis1D(varargin)
     dx = .1; N = 1000;
     
     U0init = false; V0init = false; Ninit = false;
-    saveData = false; saveSpeed = false;
+    saveData = false; saveSpeed = false; saveWavelength = false;
     graph = true;
 
     %% Input and Error handling
@@ -118,6 +118,8 @@ function varargout = Chemotaxis1D(varargin)
                 saveData = varargin{2*i};
             case 'SAVESPEED'
                 saveSpeed = varargin{2*i};
+            case 'SAVEWAVELENGTH'
+                saveWavelength = varargin{2*i};
             case 'GRAPH'
                 graph = varargin{2*i};
             otherwise
@@ -173,7 +175,7 @@ function varargout = Chemotaxis1D(varargin)
     clear U_ V_
     
     %% Display Results and Save Data
-    if graph || saveData || saveSpeed
+    if graph || saveData || saveSpeed || saveWavelength
         x = dx:dx:dx*N;
         t = nSaveStep*dt:nSaveStep*dt:dt*numsteps;
     end
@@ -185,19 +187,21 @@ function varargout = Chemotaxis1D(varargin)
     end
     
     % Save Data
-    if saveData || saveSpeed
-        if saveData
-            save('CrankNicolsonChemotaxisData_new.mat','U','V','x','t','dx','dt','b','kappa')
-        end
-        if saveSpeed
-            updateSpeedData(U,x,t,kappa,b)
-        end
+    if saveData
+        save('Data/CrankNicolsonChemotaxisData_new.mat','U','V','x','t','dx','dt','b','kappa')
+    end
+    if saveSpeed
+        updateSpeedData(U,x,t,kappa,b)
+    end
+    if saveWavelength
+        updateWavelengthData(U,x,kappa,b)
     end
     
     %% Construct output
     switch nargout
         case 0
-            ['speed: ', num2str(spreadingSpeed(U(5:end,:),x(5:end),t))]
+            ['speed:      ', num2str(spreadingSpeed(U(5:end,:),x(5:end),t))]
+            ['wavelength: ', num2str(wavelength(U(:,end),x))]
         case 1
             s = spreadingSpeed(U(5:end,:),x(5:end),t);
             varargout = {s};

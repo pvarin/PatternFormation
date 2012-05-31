@@ -198,11 +198,16 @@ function varargout = Chemotaxis2D(varargin)
     Dx = derivativeMatrix(N,dx); Dy = derivativeMatrix(M,dy);
     Lx = laplacianMatrix(N,dx); Ly = laplacianMatrix(M,dy);
 
-    [L_Diff_x, U_Diff_x, ~] = lu(speye(N)-dt/2*Lx);
-    [L_Diff_y, U_Diff_y, ~] = lu(speye(M)-dt/2*Ly);
+    [L_Diff_Ux, U_Diff_Ux, ~] = lu(speye(N)-dt/2*Lx);
+    [L_Diff_Uy, U_Diff_Uy, ~] = lu(speye(M)-dt/2*Ly);
+    [L_Diff_Vx, U_Diff_Vx, ~] = lu(speye(N)-dt/2*kappa*Lx);
+    [L_Diff_Vy, U_Diff_Vy, ~] = lu(speye(M)-dt/2*kappa*Ly);
 
-    Diffuse_x = speye(N)+dt/2*Lx;
-    Diffuse_y = speye(M)+dt/2*Ly;
+    Diffuse_Ux = speye(N)+dt/2*Lx;
+    Diffuse_Uy = speye(M)+dt/2*Ly;
+    Diffuse_Vx = speye(N)+dt/2*kappa*Lx;
+    Diffuse_Vy = speye(M)+dt/2*kappa*Ly;
+
 
     %% Simulate
     %Crank-Nicolson Method
@@ -215,11 +220,11 @@ function varargout = Chemotaxis2D(varargin)
         end
         nstep = nstep+1;
         %Crank-Nicolson Diffusion
-        U = ((U*Diffuse_x)/U_Diff_x)/L_Diff_x;
-        V = ((V*Diffuse_x)/U_Diff_x)/L_Diff_x;
+        U = ((U*Diffuse_Ux)/U_Diff_Ux)/L_Diff_Ux;
+        V = ((V*Diffuse_Vx)/U_Diff_Vx)/L_Diff_Vx;
           
-        U = U_Diff_y\(L_Diff_y\(Diffuse_y*U));
-        V = U_Diff_y\(L_Diff_y\(Diffuse_y*V));
+        U = U_Diff_Uy\(L_Diff_Uy\(Diffuse_Uy*U));
+        V = U_Diff_Vy\(L_Diff_Vy\(Diffuse_Vy*V));
         
         %Crank-Nicolon Other Linear
         V = V*(1+dt/2)/(1-dt/2);
@@ -253,7 +258,7 @@ function varargout = Chemotaxis2D(varargin)
         y = dy:dy:dy*M;
         t = nSaveStep*dt:nSaveStep*dt:dt*numsteps;
         
-        save('CrankNicolsonChemotaxisData_new.mat','U','V','x','y','t','dx','dy','dt','b','kappa')
+        save('Data/2DChemotaxisData_new.mat','U','V','x','y','t','dx','dy','dt','b','kappa')
     end
     
     %% Construct output
