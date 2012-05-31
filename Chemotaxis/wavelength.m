@@ -8,6 +8,7 @@ function wavelength = wavelength(U, x)
         end
     end
     wavelength = mean(diff(xi(2:end)*dx));
-    ['Found ' num2str(length(xi)) ' peaks']
-    xi*dx
+    
+%     ['Found ' num2str(length(xi)) ' peaks']
+%     xi*dx
 end

@@ -295,12 +295,13 @@ function L = laplacianMatrix(N, dx)
 end
 
 function [Top,UPlot] = initgraphics(N,M,dx,dy)
+   figure
    clf
    shg
    set(gcf,'numbertitle','off','name','2-D Chemotaxis Simulation')
    UPlot = surf(dx:dx:N*dx,dy:dy:M*dy,zeros(M,N));
    shading interp
-   axis([0 dy*M 0 dx*N 0 5])
+   axis([0 dx*N 0 dy*M 0 5])
    xlabel('x')
    ylabel('y')
    Top = title('2-D Chemotaxis Simulation');

@@ -236,3 +236,31 @@ function L = laplacianMatrix(N, dx)
     d = [1; 0; -1];
     L = spdiags(B, d, N, N)/dx^2;
 end
+
+function animate(U, V, dx)
+    % unpack structure size
+    N = size(U);
+    numsteps = N(2);
+    N = N(1);
+
+    figure
+    hold all
+    for i=1:floor(numsteps/100):numsteps
+        clf
+        shg
+        plot(linspace(0,dx*N,N),U(:,i))
+        hold all
+        plot(linspace(0,dx*N,N),V(:,i))
+        axis([0 dx*N 0 25])
+        drawnow
+    end
+end
+
+function spacetime(U,x,t)
+    figure
+    pcolor(x,t,U')
+    shading flat
+    colormap gray
+    axis([0 x(end) 0 t(end) 0 .1 0 2])
+    drawnow
+end
