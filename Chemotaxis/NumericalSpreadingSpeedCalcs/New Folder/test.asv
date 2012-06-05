@@ -1,0 +1,12 @@
+clear all; close all;
+n=1000;
+[L,Li] = meshgrid(linspace(-10,10,n),linspace(-10,10,n));
+s=4;
+wedgeProd = zeros(n,1);
+for i = 1:length(L)
+    wedgeProd(i) = eigenvectors(L(i),s,.5,1.1);
+end
+plot(L,wedgeProd);
+% K = 1; X = 1;
+% g= 4*(2*K^2*L.*(1+L)+K*L.*sqrt(K^3*L.*(1+L))+sqrt(K^3*L.*(1+L)).*(1+L-X))/K;
+% plot(L,g,'-g')
