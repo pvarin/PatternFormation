@@ -1,6 +1,6 @@
 function s = speed(kappa, chi, guess)
     global L_guess
-    L_guess = [1 1];
+    L_guess = [1; 1];
     s = fzero(@(s) realPartLambda(s, kappa, chi), guess);
 end
 
@@ -23,7 +23,7 @@ function res = wedgeEigenvectors(L, s, K, X)
     [e_small, ~] = eigs(A2,1,'sr');%eigenvector corresponding to the eigenvector with the smallest real part
     
     res = wedge(e_large,e_small);
-    res = sign(real(res))*abs(res);%FIXME
+    res = [real(res); imag(res)];%FIXME
 end
 
 function res = wedge(v1,v2)
