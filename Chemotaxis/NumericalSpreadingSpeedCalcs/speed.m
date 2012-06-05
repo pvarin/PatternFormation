@@ -1,13 +1,13 @@
 function s = speed(kappa, chi, guess)
     global L_guess
-    L_guess = [1; 1];
+    L_guess = [0; 1];
     s = fzero(@(s) realPartLambda(s, kappa, chi), guess);
 end
 
 function r_L = realPartLambda(s, K, X)
     %find the lambda for which the wedgeProduct of the eigenvectors is zero
     global L_guess
-    L_guess = fsolve(@(L) wedgeEigenvectors(L,s,K,X),L_guess);
+    [L_guess,~,~] = fsolve(@(L) wedgeEigenvectors(L,s,K,X),L_guess);
     r_L=L_guess(1);
 end
 
@@ -22,8 +22,12 @@ function res = wedgeEigenvectors(L, s, K, X)
     [e_large, ~] = eigs(A2,1,'lr');%eigenvector corresponding to the eigenvector with the largest real part
     [e_small, ~] = eigs(A2,1,'sr');%eigenvector corresponding to the eigenvector with the smallest real part
     
+    e_large = e_large*sign(e_large(1));
+    e_small = e_small*sign(e_small(1));
+    
     res = wedge(e_large,e_small);
-    res = [real(res); imag(res)];
+    sprintf('L: %f.4 + %f.4i\nwedge: %f.4 + %f.4i',real(L),imag(L),real(res),imag(res));
+    res = [real(res); imag(res)]+.00001*[1; 1];
 end
 
 function res = wedge(v1,v2)

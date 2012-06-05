@@ -92,7 +92,7 @@ function varargout = Chemotaxis2D(varargin)
                     throw(err)
                 end
                 N = U0s(2);
-                M = V0s(1);
+                M = U0s(1);
                 clear V0s U0s
             case 'V0'
                 V0 = varargin{2*i};
@@ -113,7 +113,7 @@ function varargout = Chemotaxis2D(varargin)
                     'The value of M that you specified is inconsistent with the dimensions of U0');
                     throw(err)
                 end
-                N = U0s(2);
+                N = V0s(2);
                 M = V0s(1);
                 clear V0s U0s
             % model parameters
@@ -240,11 +240,16 @@ function varargout = Chemotaxis2D(varargin)
 %         U = U_Uy\(L_Uy\(Uy_op*U-dt*b*Dy*(Dy*V.*U)));
 %         V = U_Vy\(L_Vy\(Vy_op*V+dt*U));
         %split the data into multiple parts
+        if isnan(U(1,1)) || U(1,1) == Inf || U(1,1) == -Inf
+            numsteps = nstep;
+            U = U_(:,:,1:floor(nstep/nSaveStep));
+            V = V_(:,:,1:floor(nstep/nSaveStep));
+            break
+        end
         if saveData && mod(nstep,nSaveStep)==0
             i=nstep/nSaveStep;
             U_(:,:,i)=U;
             V_(:,:,i)=V;
-        enddrawnow
         end
     end
     
