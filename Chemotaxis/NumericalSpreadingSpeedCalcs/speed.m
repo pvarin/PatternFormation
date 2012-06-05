@@ -8,7 +8,7 @@ function r_L = realPartLambda(s, K, X)
     %find the lambda for which the wedgeProduct of the eigenvectors is zero
     global L_guess
     L_guess = fsolve(@(L) wedgeEigenvectors(L,s,K,X),L_guess);
-    r_L=L(1);
+    r_L=L_guess(1);
 end
 
 function res = wedgeEigenvectors(L, s, K, X)
@@ -23,7 +23,7 @@ function res = wedgeEigenvectors(L, s, K, X)
     [e_small, ~] = eigs(A2,1,'sr');%eigenvector corresponding to the eigenvector with the smallest real part
     
     res = wedge(e_large,e_small);
-    res = [real(res); imag(res)];%FIXME
+    res = [real(res); imag(res)];
 end
 
 function res = wedge(v1,v2)
