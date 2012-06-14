@@ -1,0 +1,25 @@
+kappa = 4;
+chi = 2;
+
+a1 = @(k) ((kappa+1)*k.^2+1)/2;
+a2 = @(k) ((kappa-1)*k.^2+1)/2;
+L = @(k) -a1(k)+sqrt(a2(k).^2+chi*k.^2);
+dLdk = @(k) (-kappa-1)*k+(a2(k)*(kappa-1).*k+chi*k)./sqrt(a2(k).^2+chi*k.^2);
+
+k = linspace(-1,1);
+plot(k,L(k))
+hold all
+plot(k(1:end-1),diff(L(k))./diff(k))
+% plot(k,dLdk(k),'go')
+plot(k,(kappa+1).^2*(a2(k)))
+
+
+a = kappa*(kappa-1)^2;
+b = 4*chi*kappa+2*kappa*(kappa-1);
+c = kappa-chi*(kappa-1)-chi^2;
+
+k_max1 = sqrt((-b+sqrt(b^2-4*a*c))/2);
+k_max2 = (-b-sqrt(b^2-4*a*c))/2;
+
+plot(k_max1,L(k_max1),'o')
+% plot(k_max2,L(k_max2),'o')

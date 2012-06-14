@@ -1,0 +1,55 @@
+function main
+    % Fundamental Constants
+    global e
+    e=exp(1);
+    
+    % Model Parameters
+    kappa = 1;
+    b = 1;
+    mass = 2;%unused as of now
+    
+    % Secondary Parameters
+    mu = e-1;
+    
+    
+    
+    
+
+
+
+
+    
+    
+    function [v N L]=initialshoot(v)
+        v(2)=v(1);
+        j=2;
+        while (v(j)-v(j-1) <=0)
+            v(j+1)=2*v(j)-v(j-1)+dx^2/kappa*(-exp(mu+v(j))+v(j));
+            j=j+1;
+        end
+        N=j-1;
+        L=N*dx*2;
+        v=v(2:length(v))';
+    end
+end
+
+function [v L Lap chemBvp]=chemInit(kappa, b, mu)
+    
+    
+end
+
+function bvp=chemBvp(kappa,b,N)
+        %defines boundary value problem as function in N points using finite differences
+        % kappa v_xx+ exp(mu+v)-v=0
+
+        % We are solving for even periodic solutions
+        % This function is defined by N points on its half period (L/2)
+        % This is equivalent to the Neumann problem on the full period (L)
+        e=ones(N,1);
+        Lap=spdiags([e -2*e e],-1:1,N,N);
+        Lap(1,1)=-1; Lap(N,N)=-1;
+
+        % k*V_xx = V - exp(u+b*V)
+        % dx = 
+        bvp = @(v,mu,L) kappa/(L/(2*N))^2*Lap*v + exp(mu+b*v) - v;
+end
