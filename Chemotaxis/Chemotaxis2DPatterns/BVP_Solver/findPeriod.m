@@ -36,7 +36,9 @@ function L = findPeriod(kappa, mass)
     a2 = ((kappa-1)*k.^2+1)/2;
     lambda = -a1+sqrt(a2.^2+mass*k.^2);
     
-    problem(0,k,lambda,0,0)
+    %Confirm that this is a solution
+    sol = [0 k lambda 0];
+    sol = fsolve(@(nu_r,nu_i,l_r,l_i) problem(nu_r,nu_i,l_r,l_i,0),sol)
     
     %% Follow the solution in s until Re(lambda) = 0
     
