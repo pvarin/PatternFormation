@@ -1,6 +1,6 @@
 function BVP_onePeriod
     kappa = 1;
-    mu = -1.1;
+    mu = -4;
     b = 1;
     T = 40;
     
@@ -13,7 +13,7 @@ function BVP_onePeriod
     end
 
     function res = bcfun(Xa,Xb)
-        res = Xb-Xa;
+        res = [Xa(2)-Xb(2)];
     end
 
     x = linspace(0,T);
