@@ -1,4 +1,4 @@
-function main
+function mainTest
     %% Constants and Parameters
     % Fundamental Constants
     global e
