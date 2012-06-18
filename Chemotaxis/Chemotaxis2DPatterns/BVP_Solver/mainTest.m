@@ -7,7 +7,7 @@ function mainTest
     % Model Parameters
     kappa = 1;
     b = 1;
-    mass = 4; % unused as of now
+    mass = 1.01; % unused as of now
     LDes = 20; % unused as of now
     
     % Secondary Parameters
@@ -39,10 +39,13 @@ function mainTest
     % Follow the solution in mu until the correct mass is acquired
     % Note: increasing mu will decrease the mass
     fprintf('Desired Mass: %f \n',mass)
-    muStep = 1*sign(calcMass()-mass);
+    muStep = .1*sign(calcMass()-mass);
     
     while abs(mass-calcMass()) > 1e-5
         fprintf('    Current Mass: %f \n',calcMass())
+        if (mu + muStep > maxMu)
+            warning('Mu is greater than the max!!!')
+        end
         mu = mu + muStep;
         v = chemSolve(v,bvp);
         plot(v);drawnow
@@ -56,16 +59,13 @@ function mainTest
     plot(v)
     
     % Refine the grid
-    while (v(end)-v(end-1))/dx > 0.1
-        v = interp(v,5);
-        N = length(v);
-        dx = L/N;
+    v = interp(v,5);
+    N = length(v);
+    dx = L/N;
 
-        plot(v);drawnow
-        bvp = chemBvp(kappa,b,N);
-        v=chemSolve(v,bvp);
-        plot(v);drawnow
-    end
+    bvp = chemBvp(kappa,b,N);
+    v=chemSolve(v,bvp);
+    plot(v);drawnow
     
     %% Nested Function Definitions
     function [v N L]=initialShoot(v0,dx)
