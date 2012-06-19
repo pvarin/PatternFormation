@@ -94,12 +94,6 @@ function [V masses periods] = equilibriumSolutions(kappa,massRange)
         displayState()
     end
 
-
-
-
-
-
-
     %% Nested Helper Functions
     function m=calcMass()
         m = mean(v);
@@ -109,14 +103,3 @@ function [V masses periods] = equilibriumSolutions(kappa,massRange)
         fprintf('\tPeriod: %6f Mass:%6f\n',L,calcMass())
     end
 end
-
-
-
-
-
-
-function mu = maximumMu(kappa,mass,T)
-    temp = kappa.*(2*pi./T).^2+1;
-    mu = min(log(mass)-mass,log(temp)-temp);
-end
-
