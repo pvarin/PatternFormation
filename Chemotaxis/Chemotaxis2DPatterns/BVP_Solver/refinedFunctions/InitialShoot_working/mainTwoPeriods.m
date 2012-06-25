@@ -4,7 +4,7 @@ mu = 1-exp(1);
 v0 = exp(1)+.8;
 
 % Simulation Parameters
-dx = 0.0030008;
+dx = 0.0060016;
 
 % Create the initial guess
 [v N L] = chemIVPShoot(v0, dx, mu, kappa);
@@ -12,24 +12,29 @@ u = exp(mu+v);
 sol = [u;v];
 
 % Confirm that this solution is close
-bvp = chemBVP(N)
+bvp = chemBVP(N);
 err = bvp(sol,L,kappa);
 plot(err); drawnow
 fprintf('The mean square error is\t%f\n',err'*err/N)
 fprintf('The maximum error is\t\t%f\n',max(abs(err)))
 
 % Refine the solution using fsolve
-sol = chemSolve(sol,L,kappa);
+sol = chemSolve(sol,L,kappa,bvp);
 
 % Reassess the error
-err = chemBVP(sol,L,kappa);
+err = bvp(sol,L,kappa);
 plot(err); drawnow
 fprintf('The mean square error is\t%f\n',err'*err/N)
 fprintf('The maximum error is\t\t%f\n',max(abs(err)))
 
 % Linearize and compute the spectrum of the linearization
 u = sol(1:N);
+u = [u; u(end:-1:1)];
 v = sol(N+1:end);
+v = [v; v(end:-1:1)];
+N = N*2;
+L = L*2;
+
 Lin = chemLinear(u,v,L,kappa);
 [eigVect eigVal] = eigs(Lin,10,1);
 diag(eigVal)
