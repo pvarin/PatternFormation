@@ -20,7 +20,6 @@ function D = derivative(dx,N,style,bc)
             warning('I do not recognize this type of derivative, please choose: "left", "right", or "symmetric"');
     end
     D = spdiags([lowerDiag centerDiag upperDiag],-1:1,N,N);
-    D = D/dx;
     
     %% Employ the Boundary Conditions
     % considers boundaries that fall on the half grid (exactly dx/2 from
@@ -36,4 +35,6 @@ function D = derivative(dx,N,style,bc)
             D(1,end) = D(1,end) + lowerDiag(1);
             D(end,1) = D(end,1) + upperDiag(end);
     end
+    
+    D = D/dx;
 end

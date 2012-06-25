@@ -48,6 +48,8 @@ function [u v] = full_chemIVPShoot(v0, kappa, dx, mu)
         
         i = i+1;
     end
+        
+    %Drop the first elements of u and v
     v = v(2:end)';
     u = u(2:end)';
 end

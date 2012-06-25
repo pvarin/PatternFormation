@@ -20,7 +20,7 @@ function bvp = full_ChemBvp(kappa,N)
     % to the Laplacian with Neumann boundary conditions
     %   To test try: 
     %     full(derivative(1,5,'left','')*derivative(1,5,'right','Neumann')) 
-    D_l = derivative(1,N,'left','');
+    D_l = -derivative(1,N,'right','Neumann')';
     D_r = derivative(1,N,'right','Neumann');
     
     % Extract U, V and calculate dx
