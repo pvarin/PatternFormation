@@ -5,6 +5,7 @@ v0 = exp(1)+.8;
 
 % Simulation Parameters
 dx = 0.0030008;
+dx = dx*3;
 
 % Create the initial guess
 [v N L] = chemIVPShoot(v0, dx, mu, kappa);

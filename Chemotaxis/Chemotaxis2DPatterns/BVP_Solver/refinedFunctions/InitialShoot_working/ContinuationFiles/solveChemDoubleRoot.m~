@@ -1,11 +1,7 @@
 function sol = solveChemDoubleRoot(kappa,mass)
     
     %handle the problem when kappa = 1
-    if abs(kappa-1)<1e-7
-        sol = solveChemDoubleRoot(1.000001,mass)/2 ...
-               + solveChemDoubleRoot(.999999,mass)/2;
-        return
-    end
+    if abs(kappa-1)>
 
     problem = doubleRootProblem(kappa);
 
