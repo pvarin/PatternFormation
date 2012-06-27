@@ -1,0 +1,46 @@
+load('../Data/equilibriumSolutions_kappa_10_mass_20_50.mat')
+
+% Mass:  2
+% Kappa: 1
+
+k = 0;
+
+% one period
+evals1 = zeros(length(k),4);
+
+u = U(:,1);
+v = V(:,1);
+
+Lin1 = chemLinear(u,v,periods(1)*2,kappa);
+T1 = transverseTerms(u,v);
+
+for i=k.^2
+    Lin_transverse = Lin1 + i*T1;
+    [~,eVals] = eigs(Lin_transverse,10,3);
+    eVals = sort(diag(eVals),1,'descend');
+    evals1(1,:) = eVals(1:4);
+    i
+end
+
+figure(1)
+plot(k,evals1)
+
+% two periods
+evals2 = zeros(length(k),4);
+
+u = [u; u(end:-1:1)];
+v = [v; v(end:-1:1)];
+
+Lin2 = chemLinear(u,v,periods(1)*2,kappa);
+T2 = transverseTerms(u,v);
+
+for i=k.^2
+    Lin_transverse = Lin2 + i*T2;
+    [~,eVals] = eigs(Lin_transverse,10,3);
+    eVals = sort(diag(eVals),1,'descend');
+    evals2(1,:) = eVals(1:4);
+    i
+end
+
+figure(2)
+plot(k,evals2)

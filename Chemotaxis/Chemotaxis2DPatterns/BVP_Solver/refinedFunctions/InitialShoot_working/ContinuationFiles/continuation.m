@@ -3,6 +3,7 @@ function continuation(kappa, massRange)
     masses = linspace(massRange(1), massRange(2))';
     initialDataFile = sprintf('initialSolution_kappa_%d.mat',floor(10*kappa));
     if ~exist(initialDataFile,'file')
+        %FIXME: implement this
         warning('initialSolution.mat does not exist you should make one here')
         return
     end
@@ -14,7 +15,7 @@ function continuation(kappa, massRange)
     N = length(u);
     mass = mean(u);
     
-    %determine the direction to take
+    %determine the closest mass
     [~, massIndex] = min(abs(mass-masses));
     
     %determine the selected period
@@ -35,12 +36,6 @@ function continuation(kappa, massRange)
     plot([sol(1:N),sol(N+1:2*N)])
     drawnow
     shg
-    
-    
-    fprintf('\tMass Dummy: %f\n\tShift Dummy: %f\n',sol(end-1),sol(end))
-    figure(4)
-    plot(bvp([sol(1:end-2);0;0],L,kappa,mass))
-    Sol = sol;
     
     %% Follow the Solution in the Period
     fprintf('Following the solution in the period...\n')
@@ -115,6 +110,6 @@ function continuation(kappa, massRange)
         fprintf('\tMass Dummy: %f\n\tShift Dummy: %f\n',sol(end-1),sol(end))
     end
     
-    filename = sprintf('equilibriumSolutions_kappa_%d_mass_%d_%d.mat',floor(10*kappa),floor(10*masses(1)),floor(10*masses(end)));
+    filename = sprintf('../Data/equilibriumSolutions_kappa_%d_mass_%d_%d.mat',floor(10*kappa),floor(10*masses(1)),floor(10*masses(end)));
     save(filename,'U','V','kappa','masses','periods')
 end

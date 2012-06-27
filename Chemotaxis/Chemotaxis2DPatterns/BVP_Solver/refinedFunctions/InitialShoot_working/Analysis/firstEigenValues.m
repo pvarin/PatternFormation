@@ -1,5 +1,6 @@
 load('../Data/equilibriumSolutions_kappa_10_mass_11_20.mat')
 
+%two periods
 evals = zeros(length(U(1,:)),4);
 
 for i = 1:length(U(1,:));
@@ -26,4 +27,9 @@ for i = 1:length(U(1,:));
     i+length(masses_)
 end
 
-plot([masses_;masses],evals','.')
+masses = [masses_;masses];
+plot(masses,evals','.')
+xlabel('mass')
+ylabel('eigenvalues')
+
+save('Coarsening.mat','masses','evals')
