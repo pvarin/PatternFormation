@@ -178,7 +178,7 @@ function varargout = Chemotaxis1D(varargin)
         U = U_U\(L_U\(U - dt*(D*((D*V).*U))));
         V = U_V\(L_V\(V + dt*(U - V)));
         %split the data into multiple parts
-        if mod(nstep,nSaveStep)==0            
+        if mod(nstep,nSaveStep)==0
             figure(1)
             plot([U,V])
             nstep
@@ -207,6 +207,10 @@ function varargout = Chemotaxis1D(varargin)
     
     % Save Data
     if saveData
+        U = cast(U,'single');
+        V = cast(V,'single');
+        x = cast(x,'single');
+        t = cast(t,'single');
         save(dataFilename,'U','V','x','t','dx','dt','kappa')
     end
     if saveSpeed
