@@ -5,6 +5,7 @@
 %
 % Returns the spacetime data for the bacteria concentration (U) and the
 % chemical concentration (V)
+%
 % [U,V] = Chemotaxis1D('parameter1', value1, 'parameter2', value2, ...)
 %   -This function takes in a variable number of parameters, if a parameter
 %   is not specified, the simulation will run with a predetermined default
@@ -46,6 +47,9 @@
 %               default: false
 
 function varargout = simulateChemotaxis1D(varargin)
+    %import dataVisualization directory
+    addpath('./DataVisualization')
+    
     %% Defaults
     %default model parameters
     
@@ -196,7 +200,7 @@ function varargout = simulateChemotaxis1D(varargin)
     % Display Results
     if graph
         spacetime(V,x,t)   
-        animate(U,V,dx)
+        animate1D(U,V,dx)
     end
     
     % Save Data
@@ -232,36 +236,4 @@ function varargout = simulateChemotaxis1D(varargin)
                     num2str(nargout) ' output arguments']);
             throw(err)
     end
-end
-
-%% Helper Functions
-function animate(U, V, dx)
-    % unpack structure size
-    N = size(U);
-    numsteps = N(2);
-    N = N(1);
-
-    figure
-    hold all
-    for i=1:floor(numsteps/100):numsteps
-        clf
-        shg
-        plot(linspace(0,dx*N,N),U(:,i))
-        hold all
-        plot(linspace(0,dx*N,N),V(:,i))
-        axis([0 dx*N 0 max(U(:,end))])
-        drawnow
-    end
-end
-
-function spacetime(U,x,t)
-    figure
-    size(x)
-    size(t)
-    size(U)
-    pcolor(x,t,U')
-    shading flat
-    colormap gray
-    axis([0 x(end) 0 t(end) 0 .1 0 max(U(:,end/2))])
-    drawnow
 end

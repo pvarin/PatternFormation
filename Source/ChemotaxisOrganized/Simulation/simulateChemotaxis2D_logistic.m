@@ -1,6 +1,6 @@
 %% Chemotaxis2D.m
 % Simulates the two dimensional chemotaxis equations:
-%   U_t = div(grad U - U grad V)
+%   U_t = div(grad U - U*(1-U)*grad V)
 %   V_t = kappa*Lap V + U - V
 %
 % Returns the spacetime data for the bacteria concentration (U) and the
