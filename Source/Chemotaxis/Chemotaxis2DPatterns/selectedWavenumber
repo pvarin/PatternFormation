@@ -1,9 +1,0 @@
-kappa = 1;
-chi = 1;
-
-a1 = @(k) ((kappa+1)*k.^2+1)/2;
-a2 = @(k) ((kappa-1)*k.^2+1)/2;
-lambda = @(k) -a1(k)+sqrt(a2(k).^2-chi);
-
-k = linspace(0,5)
-plot(k,lambda(k))

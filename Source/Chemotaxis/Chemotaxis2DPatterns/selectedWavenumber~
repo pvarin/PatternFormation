@@ -1,4 +1,0 @@
-kappa = 1;
-chi = 1;
-
-lambda = @(k) 
